@@ -1,0 +1,20 @@
+
+<div id="wrapper">
+  <app-sidebar></app-sidebar>
+
+  <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+      <!--<app-topbar></app-topbar>-->
+
+      <div [ngClass]="{'mx-2 px-sm-2 px-md-4 px-lg-4 px-xl-4': style === 'inventaire' || style === 'prets' || style === 'memos'}">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>

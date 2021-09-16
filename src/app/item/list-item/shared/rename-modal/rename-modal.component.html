@@ -1,0 +1,85 @@
+<div class="modal fade" [id]="'renameModal'+whoRename.id+whoRename.getClassNameFirstLetter()" tabindex="-1"
+     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-truncate" id="exampleModalLabel2">
+                    Renommer <span class="font-weight-bolder">{{ this.whoRename.name ? this.whoRename.name : this.whoRename.reference }}</span> ?
+                </h5>
+                <button [id]="'crossRenameModal'+whoRename.id+whoRename.getClassNameFirstLetter()"
+                        class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-window-close text-danger" ></i></span>
+                </button>
+            </div>
+            <form [formGroup]="renameForm">
+                <div class="modal-body text-center pt-1">
+                    <div [ngClass]="{'invisible': renameForm.valid }" class="text-left mb-1">
+                        <div *ngIf="renameForm.controls.name.errors?.minlength" class="alert-danger">
+                            <small *ngIf="this.whoRename.getClassNameFirstLetter() === 'C' ||
+                                          this.whoRename.getClassNameFirstLetter() === 'I'">
+                                Le nom doit faire au moins {{ minlength }} caractères
+                            </small>
+                            <small *ngIf="this.whoRename.getClassNameFirstLetter() === 'S'">
+                                La référence doit faire au moins {{ minlength }} caractères
+                            </small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!renameForm.controls.name.errors?.minlength
+                                                        && renameForm.controls.name.errors?.leftwhitespace">
+                            <small class="ml-1">Espacement à gauche interdit</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!renameForm.controls.name.errors?.minlength
+                                                        && renameForm.controls.name.errors?.rightwhitespace">
+                            <small class="ml-1">Espacement à doite interdit</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!renameForm.controls.name.errors?.minlength
+                                                        && renameForm.controls.name.errors?.witespacerepetition">
+                            <small class="ml-1">Double espacement interdit</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!renameForm.controls.name.errors?.leftwhitespace
+                                                      && !renameForm.controls.name.errors?.rightwhitespace
+                                                      && !renameForm.controls.name.errors?.witespacerepetition
+                                                      &&  renameForm.controls.name.errors?.characterrepetition">
+                            <small class="ml-1 small">Répétition de caractère interdite</small>
+                        </div>
+                        <div *ngIf="renameForm.controls.name.errors?.checkatomicitemname" class="alert-danger">
+                            <small>Vous utilisez déjà ce nom pour un de vos objets</small>
+                        </div>
+                        <div *ngIf="renameForm.controls.name.errors?.checkatomiccategoryname" class="alert-danger">
+                            <small>Vous utilisez déjà ce nom pour une de vos categories</small>
+                        </div>
+                        <div *ngIf="renameForm.controls.name.errors?.checkatomicref" class="alert-danger">
+                            <small>Vous utilisez déjà cette référence pour un de vos objets</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!renameForm.controls.name.errors?.leftwhitespace
+                                                      && !renameForm.controls.name.errors?.rightwhitespace
+                                                      && !renameForm.controls.name.errors?.witespacerepetition
+                                                      && !renameForm.controls.name.errors?.characterrepetition 
+                                                      &&
+                                                        (renameForm.controls.name.errors?.failatomicref ||
+                                                         renameForm.controls.name.errors?.failatomicitemname ||
+                                                         renameForm.controls.name.errors?.failatomiccategoryname)">
+                            <small>Une erreur de communication s'est produite</small>
+                        </div>
+                        <div *ngIf="renameForm.controls.name.errors === null || renameForm.controls.name.errors.required"
+                             [ngClass]="{'invisible': true}">
+                            <small>.</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control form-control-user" formControlName="name" id="nameRename" type="text"
+                               [maxlength]="maxlength" placeholder="{{ this.whoRename.name ?
+                                                       'Saisir le nouveau nom de \'' +this.whoRename.name+ '\'' :
+                                                       'Saisir la nouvelle référence de \'' +this.whoRename.reference+ '\'' }}">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [id]="'cancelRenameModal'+whoRename.id+whoRename.getClassNameFirstLetter()"
+                            class="btn btn-danger" type="button" data-dismiss="modal">Annuler</button>
+                    <button [id]="'submitRenameModal'+whoRename.id+whoRename.getClassNameFirstLetter()" (click)="onSubmitRenameForm()"
+                            class="btn btn-primary text-truncate" type="submit" data-dismiss="modal"
+                            [disabled]="!renameForm.valid">Renommer {{ this.whoRename.name ? this.whoRename.name : this.whoRename.reference }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

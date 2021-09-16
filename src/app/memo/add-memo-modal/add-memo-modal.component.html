@@ -1,0 +1,185 @@
+<div class="modal fade" [id]="'addMemoModal' + (this.whoMemoUpdate ? this.whoMemoUpdate.id : '')" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" (focus)="this.whoMemoUpdate ? resetModal(false) : null">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header mb-3">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    {{this.whoMemoUpdate ? 'Modifier le' : 'Ajouter un'}} mémo
+                </h5>
+                <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-window-close text-danger" ></i></span>
+                </button>
+            </div>
+            <form [formGroup]="memoForm">
+                <div class="modal-body pt-1">
+                    <div class="alert-danger mb-1" *ngIf="memoForm.controls.title.errors?.required">
+                        <small class="ml-1">Titre non renseigné</small>
+                    </div>
+                    <div class="alert-danger mb-1" *ngIf="memoForm.controls.title.errors?.minlength">
+                        <small  class="ml-1">{{minlengthTitle}} caratères minimum requis</small>
+                    </div>
+                    <div class="alert-danger mb-1" *ngIf="!memoForm.controls.title.errors?.minlength
+                                                      && memoForm.controls.title.errors?.leftwhitespace">
+                        <small class="ml-1">Espacement à gauche interdit</small>
+                    </div>
+                    <div class="alert-danger mb-1" *ngIf="!memoForm.controls.title.errors?.minlength
+                                                      && memoForm.controls.title.errors?.rightwhitespace">
+                        <small class="ml-1">Espacement à doite interdit</small>
+                    </div>
+                    <div class="alert-danger mb-1" *ngIf="!memoForm.controls.title.errors?.minlength
+                                                      && memoForm.controls.title.errors?.witespacerepetition">
+                        <small class="ml-1">Double espacement interdit</small>
+                    </div>
+                    <div class="alert-danger mb-1" *ngIf="!memoForm.controls.title.errors?.minlength
+                                                      && !memoForm.controls.title.errors?.leftwhitespace
+                                                      && !memoForm.controls.title.errors?.rightwhitespace
+                                                      && !memoForm.controls.title.errors?.witespacerepetition
+                                                      && memoForm.controls.title.errors?.characterrepetition">
+                        <small class="ml-1">Répétition de caractère interdite</small>
+                    </div>
+                    <div class="mb-1 alert-success" *ngIf="memoForm.controls.title.valid">
+                        <small class="ml-1">Titre valide</small>
+                    </div>
+                    <div class="form-group mb-3">
+                        <input aria-label="" class="form-control" formControlName="title" id="titleMemo" type="text"
+                               placeholder="Saisir le titre du mémo*" [maxlength]="maxlengthTitle">
+                    </div>
+
+                    <div class="alert-danger mb-1" *ngIf="memoForm.controls.content.errors?.required">
+                        <small class="ml-1">Contenu non renseigné</small>
+                    </div>
+                    <div class="alert-danger mb-1" *ngIf="memoForm.controls.content.errors?.minlength">
+                        <small  class="ml-1">{{minlengthContent}} caratères minimum requis</small>
+                    </div>
+                    <div class="alert-danger mb-1" *ngIf="!memoForm.controls.content.errors?.minlength
+                                                      && memoForm.controls.content.errors?.leftwhitespace">
+                        <small class="ml-1">Espacement à gauche interdit</small>
+                    </div>
+                    <div class="alert-danger mb-1" *ngIf="!memoForm.controls.content.errors?.minlength
+                                                      && memoForm.controls.content.errors?.rightwhitespace">
+                        <small class="ml-1">Espacement à doite interdit</small>
+                    </div>
+                    <div class="alert-danger mb-1" *ngIf="!memoForm.controls.content.errors?.minlength
+                                                      && memoForm.controls.content.errors?.witespacerepetition">
+                        <small class="ml-1">Double espacement interdit</small>
+                    </div>
+                    <div class="alert-danger mb-1" *ngIf="!memoForm.controls.content.errors?.minlength
+                                                      && !memoForm.controls.content.errors?.leftwhitespace
+                                                      && !memoForm.controls.content.errors?.rightwhitespace
+                                                      && !memoForm.controls.content.errors?.witespacerepetition
+                                                      && memoForm.controls.content.errors?.characterrepetition">
+                        <small class="ml-1">Répétition de caractère interdite</small>
+                    </div>
+                    <div class="mb-1 alert-success" *ngIf="memoForm.controls.content.valid">
+                        <small class="ml-1">Contenu valide</small>
+                    </div>
+                    <div class="form-group mb-4">
+                        <textarea aria-label="" class="form-control" formControlName="content"
+                                  placeholder="Saisir le contenu du mémo*" [maxlength]="maxlengthContent"></textarea>
+                    </div>
+
+                    <hr>
+                    <div>
+                        <p class="mb-0">Désirez-vous mettre un rappel pour ce mémo ?</p>
+                        <input class="mr-2 ml-2" type="radio"
+                               formControlName="radio" [value]="radioDefaultValue">
+                        Pas de rappel
+                        <br>
+                        <div class="row">
+                            <div class="col-12 d-inline-flex justify-content-between">
+                                <div>
+                                    <input class="mr-2 ml-2" type="radio"
+                                           formControlName="radio" [value]="radioReminderByDateValue">
+                                    Date de rappel
+                                </div>
+                                <div *ngIf="memoForm.controls.radio.value === radioReminderByDateValue">
+                                    <select class="form-control custom-select" formControlName="nbrRemindersByDate"
+                                            (change)="onAdjustReminderByDate()">
+                                        <option disabled hidden
+                                                [selected]="!this.memoForm.controls.nbrRemindersByDate.value">
+                                            Nombre de date*
+                                        </option>
+                                        <option *ngFor="let ArrayEmptyCase of getArray(maxReminderByDate);
+                                                        let i = index" [value]="(i+1)"
+                                                [label]="(i+1) + ' date' + (i+1 > 1 ? 's' : '')">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <input class="mr-2 ml-2" type="radio" formControlName="radio" [value]="radioReminderByDayValue">
+                        Fréquence de rappel
+                    </div>
+
+                    <div formArrayName="remindersByDate" *ngIf="memoForm.controls.radio.value === radioReminderByDateValue">
+                        <hr *ngIf="getRemindersByDate().controls.length > 0">
+                        <div *ngFor="let reminders of getRemindersByDate().controls; let i = index"
+                             class="form-group pt-2">
+                            <p>Rappel {{i+1}} :</p>
+                            <input #input
+                                   [formControlName]="'' + i"
+                                   [min]="minDate | date: 'yyyy-MM-dd'"
+                                   (focus)="(input.type='date')"
+                                   (blur)="input.type = (!getRemindersByDate().get(''+i).value
+                                        || getRemindersByDate().get(''+i).value === '') ? 'text' : 'date'"
+                                   [type]="(!getRemindersByDate().get(''+i).value
+                                        || getRemindersByDate().get(''+i).value === '') ? 'text' : 'date'"
+                                   class="form-control" placeholder="Recevoir un rappel concernant ce prêt par mail ?">
+                        </div>
+                    </div>
+
+                    <div *ngIf="memoForm.controls.radio.value === radioReminderByDayValue">
+                        <hr>
+                        <p>Fréquence hebdomadaire :</p>
+                        <div class="d-flex align-items-center justify-content-center">
+                        <input type="button" value="L" (click)="onDay('M')"
+                               class="btn" style="min-width: 39px; max-width: 39px"
+                                    [ngClass]="{'btn-danger': !getRemindersByDay().controls.monday.value,
+                                        'btn-success': getRemindersByDay().controls.monday.value}">
+                        <input type="button" value="M" (click)="onDay('TU')"
+                               class="btn ml-1" style="min-width: 39px; max-width: 39px"
+                                    [ngClass]="{'btn-danger': !getRemindersByDay().controls.tuesday.value,
+                                        'btn-success': getRemindersByDay().controls.tuesday.value}">
+                        <input type="button" value="M" (click)="onDay('W')"
+                               class="btn ml-1" style="min-width: 39px; max-width: 39px"
+                                    [ngClass]="{'btn-danger': !getRemindersByDay().controls.wednesday.value,
+                                        'btn-success': getRemindersByDay().controls.wednesday.value}">
+                        <input type="button" value="J" (click)="onDay('TH')"
+                               class="btn ml-1" style="min-width: 39px; max-width: 39px"
+                                    [ngClass]="{'btn-danger': !getRemindersByDay().controls.thursday.value,
+                                        'btn-success': getRemindersByDay().controls.thursday.value}">
+                        <input type="button" value="V" (click)="onDay('F')"
+                               class="btn ml-1" style="min-width: 39px; max-width: 39px"
+                                    [ngClass]="{'btn-danger': !getRemindersByDay().controls.friday.value,
+                                        'btn-success': getRemindersByDay().controls.friday.value}">
+                        <input type="button" value="S" (click)="onDay('SA')"
+                               class="btn ml-1" style="min-width: 39px; max-width: 39px"
+                                    [ngClass]="{'btn-danger': !getRemindersByDay().controls.saturday.value,
+                                        'btn-success': getRemindersByDay().controls.saturday.value}">
+                        <input type="button" value="D" (click)="onDay('SU')"
+                               class="btn ml-1" style="min-width: 39px; max-width: 39px"
+                                    [ngClass]="{'btn-danger': !getRemindersByDay().controls.sunday.value,
+                                        'btn-success': getRemindersByDay().controls.sunday.value}">
+                        </div>
+                    </div>
+                    <div *ngIf="whoMemoUpdate">
+                        <hr>
+                        <label>
+                            <input formControlName="checkbox" type="checkbox">
+                            <span class="ml-2">Je valide les modifications</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="button"
+                            (click)="resetModal(true)">Valeurs par défaut</button>
+                    <button class="btn btn-danger" data-dismiss="modal" type="button">Annuler</button>
+                    <button class="btn btn-primary" type="submit" data-dismiss="modal"
+                            (click)="onSubmitMemoForm()"  [disabled]="!memoForm.valid">
+                        {{this.whoMemoUpdate ? 'Modifier' : 'Ajouter'}} le mémo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

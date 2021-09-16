@@ -1,0 +1,66 @@
+<div class="mt-4">
+  <div class="card-deck align-items-center justify-content-between">
+    <div class="d-flex">
+      <!-- Sidebar Toggle (Topbar) -->
+      <button id="sidebarToggleTop" class="text-gray-800 btn btn-link d-md-none rounded-circle mr-1 ml-1">
+        <i class="fa fa-bars"></i>
+      </button>
+      <h1 class="h1 mb-2 text-gray-800">Inventaire</h1>
+    </div>
+    <div>
+      <div class="text-center d-flex flex-row">
+        <h5>
+          <button class="mr-5 p-3 btn btn-primary" (click)="addCategoryClick()">
+            Ajouter une catégorie
+          </button>
+        </h5>
+        <h5>
+          <button class="mr-1 p-3 btn btn-primary" (click)="addItemClick()">
+            Ajouter un objet
+          </button>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <hr />
+  <div *ngIf="!category || ((!category.items || category.items.length === 0) && (!category.categories || category.categories.length === 0))" class="text-center">
+    <h3 class="mt-5">Votre inventaire est vide</h3>
+    <h5 class="mt-5">Vous pouvez créer vos catégories et y ajouter des objets grâce aux boutons ci-dessus<i class="ml-3 fas fa-long-arrow-alt-up"></i></h5>
+  </div>
+  <div *ngIf="category != null">
+    <div class="mt-5" *ngIf="category.items != null && category.items.length > 0">
+      <div *ngFor="let item0 of category.items; let i = index">
+        <div *ngIf="i % 4 === 0 || i === 0" class="card-deck justify-content-center">
+          <app-item *ngFor="let item of category.items.slice(i, i+4)"
+                    [id]="item.id"
+                    [name]="item.name"
+                    [description]="item.description"
+                    [subItems]="item.subItems">
+          </app-item>
+        </div>
+      </div>
+    </div>
+    <hr *ngIf="category.items != null && category.items.length > 0" class="mt-5"/>
+    <div  class="mt-5" *ngIf="category.categories != null && category.categories.length > 0">
+      <div *ngFor="let category0 of category.categories; let i = index">
+        <div *ngIf="i % 4 === 0 || i === 0" class="card-deck justify-content-center">
+          <app-category *ngFor="let pCategory of category.categories.slice(i, i+4)"
+                        [id]="pCategory.id"
+                        [name]="pCategory.name"
+                        [categories]="pCategory.categories"
+                        [items]="pCategory.items">
+          </app-category>
+        </div>
+      </div>
+    </div>
+    <div class="mt-5"></div>
+  </div>
+</div>
+
+<!-- ******************************************************** MODALS ************************************************-->
+<!-- ADD CATEGORY -->
+<app-add-category-modal *ngIf="addCategoryModal" [category]="this.category"></app-add-category-modal>
+
+<!-- ADD ITEM -->
+<app-add-item-modal *ngIf="addItemModal" [id]="this.category.id" [nameTitle]="this.category.name" [formWithCategory]="true"></app-add-item-modal>
+

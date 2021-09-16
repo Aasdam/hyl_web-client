@@ -1,0 +1,93 @@
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" [id]="goal+'LoanModal'+(!singleLoan ? 'All': loans[0].id)"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" [ngClass]="{'modal-lg': singleLoan}" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel3">
+                    <span *ngIf="singleLoan">
+                        <span *ngIf="goal === 'close'">Clôturer</span>
+                        <span *ngIf="goal === 'delete'">Supprimer</span>
+                        le prêt ?
+                    </span>
+                    <span *ngIf="!singleLoan">
+                        <span *ngIf="goal === 'close'">Clôturer</span>
+                        <span *ngIf="goal === 'delete'">Supprimer</span>
+                        tous les prêts ?
+                    </span>
+                </h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-window-close text-danger" ></i></span>
+                </button>
+            </div>
+            <form [formGroup]="loanForm">
+                <div class="modal-body text-truncate">
+                    <div *ngIf="singleLoan">
+                        <p class="mt-2 mb-4 font-weight-bolder text-danger text-center">
+                            Attention, vous êtes sur le point de
+                            <span *ngIf="goal === 'close'">clôturer</span>
+                            <span *ngIf="goal === 'delete'">supprimer</span>
+                            un prêt <span *ngIf="goal === 'delete'">{{etat === 'en cours' ? etat : 'terminé'}}</span>.
+                        </p>
+                        <table class="table table-bordered">
+                            <tbody class="thead-light">
+                                <tr>
+                                    <th class="">Création</th>
+                                    <td class="">{{ loans[0].startDate | date: 'dd/MM/yyyy'}}</td>
+                                </tr>
+                                <tr *ngIf="etat === 'terminés'">
+                                    <th>Clôture</th>
+                                    <td class="">{{ loans[0].endDate | date: 'dd/MM/yyyy'}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Bénéficiaire</th>
+                                    <td class="">{{ loans[0].beneficiary }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Référence</th>
+                                    <td class="">{{ loans[0].reference }}</td>
+                                </tr>
+                                <tr *ngIf="loans[0].information && loans[0].information.length > 0">
+                                    <th>Information</th>
+                                    <td class="">{{ loans[0].information }}</td>
+                                </tr>
+                                <tr *ngIf="etat === 'en cours'">
+                                    <th>Rappel</th>
+                                    <td class="">{{ loans[0].reminder ?  (loans[0].reminder | date: 'dd/MM/yyyy') : 'Aucun rappel de prévu'}}</td>
+                                </tr>
+                                <tr *ngIf="etat === 'terminés' && (loans[0].comment && loans[0].comment.length > 0)">
+                                    <th>Commentaire</th>
+                                    <td class="">{{ loans[0].comment }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p *ngIf="!singleLoan" class="text-danger font-weight-bolder text-center">
+                        Attention, vous allez
+                        <span *ngIf="goal === 'close'">clôturer</span>
+                        <span *ngIf="goal === 'delete'">supprimer</span>
+                        tous les prêts <span *ngIf="goal === 'delete'">{{etat}}</span>.
+                    </p>
+                    <div *ngIf="goal === 'close'" class="form-group mt-4 mb-4">
+                        <textarea class="form-control" formControlName="comment" id="commentClose" [maxlength]="maxlengthComment"
+                                  placeholder="{{ (!singleLoan ? 'Commenter les clôtures des prêts ?' :
+                                  'Commenter la clôture du pret ?') + ' (15 caracts min)' }}"> </textarea>
+                    </div>
+                    <div class="mt-2 text-right">
+                        Cocher pour déverrouiller le bouton
+                        <input class="mr-2 ml-2" type="checkbox" formControlName="checkbox">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="button" data-dismiss="modal">Annuler</button>
+                    <button class="btn btn-primary" type="submit" data-dismiss="modal"
+                            (click)="onSubmitLoanForm()" [disabled]="!loanForm.valid">
+                        <span *ngIf="goal === 'close'">Clôturer</span>
+                        <span *ngIf="goal === 'delete'">Supprimer</span>
+                        {{ singleLoan ? 'le prêt' : 'tous les prêts'}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="card shadow m-1">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header bg-gray-100 py-0 d-flex flex-row align-items-center">
+        <div class="col-lg-11 col-md-11 px-0 text-truncate">
+            <a [id]="'expandSubItemModalA'+id" (click)="expandSubitemModalOn()" class="text-decoration-none" data-toggle="modal" href="#">
+                <small class="font-weight-bold font-italic text-info">{{ reference }}</small>
+            </a>
+        </div>
+
+        <!-- Dropdown Item -->
+        <div class="dropdown no-arrow">
+            <!-- Bouton menu animé -->
+            <a class="dropdown-toggle" href="#" role="button" [id]="'dropdownItem'+reference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-info"></i>
+            </a>
+            <!-- Menu annimé -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" [attr.aria-labelledby]="'dropdownItem'+id">
+                <div class="dropdown-header">{{ reference }}</div>
+                <a class="dropdown-item" (click)="renameSubItemClick()" href="#">
+                    <span class="font-weight-bolder">Renommer</span>
+                </a>
+                <a class="dropdown-item" (click)="deleteSubItemClick()" href="#">
+                    <span class="font-weight-bolder">Supprimer</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ****************************************************** MODALS ************************************************* -->
+<!-- RENAME SUBITEM -->
+<app-rename-modal *ngIf="renameSubItemModal" [whoRename]="this"></app-rename-modal>
+
+<!-- DELETE SUBITEM -->
+<app-del-modal *ngIf="deleteSubItemModal" [whoDelete]="this"></app-del-modal>
+
+<!-- EXPAND SUBITEM -->
+<app-expand-subitem-modal *ngIf="expandSubitem" [subitem]="this" [description]="this.description"></app-expand-subitem-modal>

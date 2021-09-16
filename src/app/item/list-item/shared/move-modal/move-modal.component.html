@@ -1,0 +1,46 @@
+<div class="modal fade" [id]="'moveModal'+whoMove.id+whoMove.getClassNameFirstLetter()" tabindex="-1"
+     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel5">
+                    Déplacer <span class="font-weight-bolder">{{ whoMove.name }}</span> ?
+                </h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-window-close text-danger" ></i></span>
+                </button>
+            </div>
+            <div *ngIf="this.instanceOfCategory()" [ngClass]="{'invisible': moveForm.controls.categoryMove.valid }" class="text-left mx-3 mb-1 mt-1">
+                <div *ngIf="moveForm.controls.categoryMove.errors?.checkcategorydepth" class="alert-danger">
+                    <small>La profondeur des catégories autorisé a été atteinte.</small>
+                </div>
+                <div *ngIf="moveForm.controls.categoryMove.errors?.failcategorydepth" class="alert-danger">
+                    <small>Une erreur de communication s'est produite</small>
+                </div>
+                <div *ngIf="moveForm.controls.categoryMove.errors === null || moveForm.controls.categoryMove.errors.required"
+                     [ngClass]="{'invisible': true}">
+                    <small>.</small>
+                </div>
+            </div>
+            <div *ngIf="this.instanceOfItem()" [ngClass]="{'invisible': true }" class="text-left mb-1 mt-1">
+                <div [ngClass]="{'invisible': true}">
+                    <small>.</small>
+                </div>
+            </div>
+            <form [formGroup]="moveForm">
+                <div class="modal-body text-center mt-0 pt-0">
+                    <div class="form-group">
+                        <select class="form-control custom-select text-muted" formControlName="categoryMove" id="categoryMove">
+                            <option value="" disabled="disabled" hidden="hidden">Choisir la catégorie de destination</option>
+                            <option *ngFor="let pCategory of getFullCategoriesInOneArray()" [value]="pCategory.id">{{ pCategory.name }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="button" data-dismiss="modal">Annuler</button>
+                    <button class="btn btn-primary" type="submit" data-dismiss="modal" (click)="onSubmitMoveForm()" [disabled]="!moveForm.valid">Déplacer {{ whoMove.name }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

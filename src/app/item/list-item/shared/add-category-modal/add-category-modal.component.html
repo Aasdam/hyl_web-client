@@ -1,0 +1,89 @@
+<div class="modal fade" [id]="'addCategoryModal'+category.id" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Ajouter une categorie
+                    <span *ngIf="!formWithType">dans l'</span>
+                    <span *ngIf="formWithType">à </span>
+                    <span class="font-weight-bolder">{{ category.name }}</span> ?
+                </h5>
+                <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-window-close text-danger" ></i></span>
+                </button>
+            </div>
+            <form [formGroup]="createCategoryForm">
+                <div class="modal-body text-center pt-0">
+                    <div [ngClass]="{'invisible': createCategoryForm.controls.name.valid }" class="text-left mb-1 mt-1">
+                        <div *ngIf="createCategoryForm.controls.name.errors?.minlength" class="alert-danger">
+                            <small>Le nom de la categorie doit faire au moins {{ minlengthCategoryName }} caractères</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!createCategoryForm.controls.name.errors?.minlength
+                                                        && createCategoryForm.controls.name.errors?.leftwhitespace">
+                            <small class="ml-1">Espacement à gauche interdit</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!createCategoryForm.controls.name.errors?.minlength
+                                                        && createCategoryForm.controls.name.errors?.rightwhitespace">
+                            <small class="ml-1">Espacement à doite interdit</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!createCategoryForm.controls.name.errors?.minlength
+                                                        && createCategoryForm.controls.name.errors?.witespacerepetition">
+                            <small class="ml-1">Double espacement interdit</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!createCategoryForm.controls.name.errors?.leftwhitespace
+                                                      && !createCategoryForm.controls.name.errors?.rightwhitespace
+                                                      && !createCategoryForm.controls.name.errors?.witespacerepetition
+                                                      &&  createCategoryForm.controls.name.errors?.characterrepetition">
+                            <small class="ml-1 small">Répétition de caractère interdite</small>
+                        </div>
+                        <div *ngIf="createCategoryForm.controls.name.errors?.checkatomiccategoryname" class="alert-danger">
+                            <small>Vous utilisez déjà ce nom pour une de vos categories</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!createCategoryForm.controls.name.errors?.leftwhitespace
+                                                      && !createCategoryForm.controls.name.errors?.rightwhitespace
+                                                      && !createCategoryForm.controls.name.errors?.witespacerepetition
+                                                      && !createCategoryForm.controls.name.errors?.characterrepetition
+                                                      && createCategoryForm.controls.name.errors?.failatomiccategoryname">
+                            <small>Une erreur de communication s'est produite</small>
+                        </div>
+                        <div *ngIf="createCategoryForm.controls.name.errors === null || createCategoryForm.controls.name.errors.required"
+                             [ngClass]="{'invisible': true}">
+                            <small>.</small>
+                        </div>
+                    </div>
+                    <div class="form-group" [ngClass]="{'mb-0': formWithType }">
+                        <input class="form-control form-control-user" formControlName="name" id="nameCreate" type="text"
+                               placeholder="Saisir le nom de la nouvelle catégorie" [maxlength]="maxlengthCategoryName">
+                    </div>
+                    <div *ngIf="formWithType" [ngClass]="{'invisible': createCategoryForm.controls.type.valid }" class="text-left mb-1 mt-1">
+                        <div *ngIf="createCategoryForm.controls.type.errors?.checkcategorydepth" class="alert-danger">
+                            <small>La profondeur des catégories autorisé a été atteinte.</small>
+                        </div>
+                        <div *ngIf="createCategoryForm.controls.type.errors?.failcategorydepth" class="alert-danger">
+                            <small>Une erreur de communication s'est produite</small>
+                        </div>
+                        <div *ngIf="createCategoryForm.controls.type.errors === null || createCategoryForm.controls.type.errors.required"
+                             [ngClass]="{'invisible': true}">
+                            <small>.</small>
+                        </div>
+                    </div>
+                    <div class="form-group" *ngIf="formWithType">
+                        <select  class="form-control custom-select" formControlName="type" id="type">
+                            <option value="" disabled hidden>Choisir le type de la catégorie à ajouter</option>
+                            <option value="C">Enfant</option>
+                            <option value="P">Parent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-dismiss="modal" type="button">Annuler</button>
+                    <button class="btn btn-primary" type="submit" data-dismiss="modal"
+                            (click)="onSubmitCreateCategoryForm()"  [disabled]="!createCategoryForm.valid">
+                        Ajouter la catégorie
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

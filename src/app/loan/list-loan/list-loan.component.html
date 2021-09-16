@@ -1,0 +1,42 @@
+<div class="mt-4">
+    <div class="card-deck align-items-center justify-content-between">
+        <div class="d-flex">
+            <!-- Sidebar Toggle (Topbar) -->
+            <button id="sidebarToggleTop" class="text-gray-800 btn btn-link d-md-none rounded-circle mr-1 ml-1">
+                <i class="fa fa-bars"></i>
+            </button>
+            <h1 class="h1 mb-2 text-gray-800">Prêts {{ etat }}</h1>
+        </div>
+        <div *ngIf="etat === 'en cours'">
+            <div class="text-center d-flex flex-row">
+                <h5 class="mt-3 mt-md-0 mt-lg-0">
+                    <button class="mr-3 p-3 btn btn-primary font-weight-bolder" data-toggle="modal" data-target="#addLoanModal">
+                        Ajouter un prêt
+                    </button>
+                </h5>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div *ngIf="!loans || loans.length === 0" class="text-center">
+        <h3 class="mt-5">Vous n'avez aucun prêt {{ etat }}</h3>
+        <h5 *ngIf="etat === 'en cours'" class="mt-5">
+            Vous pouvez <span class="font-weight-bolder">créer un prêt</span>
+            pour n'importe quel objet de votre <a routerLink="/inventaire">inventaire</a>
+            grâce au bouton ci-dessus <i class="ml-3 fas fa-long-arrow-alt-up fa-2x"></i>
+        </h5>
+        <h5 *ngIf="etat === 'terminés'" class="mt-5">
+           Pour créer un prêt utilisez le bouton
+            <span class="font-weight-bolder">Ajouter un prêt</span>
+            présent sur la page des <a routerLink="/prets-en-cours">prêts en cours</a>
+        </h5>
+    </div>
+    <div *ngIf="loans && loans.length > 0" class="mt-5">
+        <app-table-loan [etat]="etat" [loans]="loans"></app-table-loan>
+    </div>
+    <div class="mt-5"></div>
+</div>
+
+<!-- ******************************************************* MODALS ************************************************ -->
+<app-add-loan-modal></app-add-loan-modal>
+

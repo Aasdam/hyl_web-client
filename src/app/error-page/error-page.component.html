@@ -1,0 +1,7 @@
+<a *ngIf="!errorLoad" class="bg-gradient-primary" #a (window:resize)="resize(img, a)" (click)="redirect()" href="#">
+    <img #img id="imgError" [src]="path" (load)="resize(img, a)" (error)="errorLoad = true" alt="error">
+</a>
+<div *ngIf="errorLoad" class="text-center mt-5 mb-5">
+    <h1 class="text-gray-800 h1 mt-5 mb-5">Une erreur s'est produite !</h1>
+    <a class="mt-5 mb-5" (click)="redirect()" href="#">Cliquer pour être redirigé.</a>
+</div>

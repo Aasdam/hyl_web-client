@@ -1,0 +1,43 @@
+<div class="modal fade" [id]="'addTrackingSheetModal' + subitem.id" tabindex="-1"
+     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-truncate" id="exampleModalLabel2">
+                    Ajouter un commentaire à <span class="font-weight-bolder">{{ subitem.reference }}</span> ?
+                </h5>
+                <button [id]="'crossAddTrackingSheetModal'+subitem.id"
+                        class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-window-close text-danger" ></i></span>
+                </button>
+            </div>
+            <form [formGroup]="addTrackingSheetForm">
+                <div class="modal-body text-center pt-1">
+                    <div [ngClass]="{'invisible': addTrackingSheetForm.valid }" class="text-left mb-1">
+                        <div *ngIf="addTrackingSheetForm.controls.comment.errors?.minlength" class="alert-danger">
+                            <small>
+                                Le commentaire doit faire au moins {{ minlengthComment }} caractères
+                            </small>
+                        </div>
+                        <div *ngIf="addTrackingSheetForm.controls.comment.errors === null || addTrackingSheetForm.controls.comment.errors.required"
+                             [ngClass]="{'invisible': true}">
+                            <small>.</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" formControlName="comment" id="commentTrackingSheet"
+                                  [maxlength]="maxlengthComment" placeholder="Saisir un commentaire de {{ minlengthComment }} caractères minimum"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [id]="'cancelAddTrackingSheetModal'+subitem.id"
+                            class="btn btn-danger" type="button" data-dismiss="modal">Annuler</button>
+                    <button [id]="'submitAddTrackingSheetModal'+subitem.id" (click)="onSubmitAddTrackingSheetForm()"
+                            class="btn btn-primary text-truncate" type="submit" data-dismiss="modal"
+                            [disabled]="!addTrackingSheetForm.valid">Ajouter un commentaire</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

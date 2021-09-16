@@ -1,0 +1,145 @@
+<div class="modal fade" (focus)="checkIfModalCreateSubItemAlreadyUsed()"
+             [id]="'addSubItemModal'+object.id+object.getClassNameFirstLetter()"
+             tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+             data-backdrop="static" data-keyboard="false" >
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel4">
+                    <span *ngIf="object.getClassNameFirstLetter() === 'I'">
+                        Ajouter un exemplaire à <span class="font-weight-bolder">{{ object.name }}</span> ?
+                    </span>
+                    <span *ngIf="object.getClassNameFirstLetter() === 'S'">
+                        Éditer <span class="font-weight-bolder">{{ object.reference }}</span> ?
+                    </span>
+                </h5>
+                <a (click)="onCancelCreateSubItemForm()" class="close" type="button" data-dismiss="modal"
+                        aria-label="Close" [id]="'crossAddSubItemModal' + object.id + object.getClassNameFirstLetter()">
+                    <span aria-hidden="true"><i class="fas fa-window-close text-danger" ></i></span>
+                </a>
+            </div>
+            <div *ngIf="object.getClassNameFirstLetter() === 'I'" class="mb-0">
+                <div *ngIf="!maxSubItemIsValid" class="alert-danger text-center mx-3 mt-1">
+                    Limite d'exemplaire d'objet atteinte: nouvel ajout impossible.
+                </div>
+                <div *ngIf="maxSubItemIsValid" class="mt-1">
+                    <div class="invisible">.</div>
+                </div>
+            </div>
+            <form [id]="'createSubItemForm'+object.id" [formGroup]="createSubItemForm">
+                <div class="modal-body text-center pb-1"
+                     [ngClass]="{'pt-2 ': object.getClassNameFirstLetter() === 'S',
+                                    'pt-1': object.getClassNameFirstLetter() === 'I'}">
+                    <div [ngClass]="{'invisible': createSubItemForm.valid }" class="text-left mb-2">
+                        <div *ngIf="createSubItemForm.controls.reference.errors?.minlength" class="alert-danger">
+                            <small>La référence doit faire au moins {{ minlengthSubItemReference }} caractères</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!createSubItemForm.controls.reference.errors?.minlength
+                                                        && createSubItemForm.controls.reference.errors?.leftwhitespace">
+                            <small class="ml-1">Espacement à gauche interdit</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!createSubItemForm.controls.reference.errors?.minlength
+                                                        && createSubItemForm.controls.reference.errors?.rightwhitespace">
+                            <small class="ml-1">Espacement à doite interdit</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!createSubItemForm.controls.reference.errors?.minlength
+                                                        && createSubItemForm.controls.reference.errors?.witespacerepetition">
+                            <small class="ml-1">Double espacement interdit</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!createSubItemForm.controls.reference.errors?.leftwhitespace
+                                                      && !createSubItemForm.controls.reference.errors?.rightwhitespace
+                                                      && !createSubItemForm.controls.reference.errors?.witespacerepetition
+                                                      &&  createSubItemForm.controls.reference.errors?.characterrepetition">
+                            <small class="ml-1 small">Répétition de caractère interdite</small>
+                        </div>
+                        <div *ngIf="createSubItemForm.controls.reference.errors?.checkatomicref" class="alert-danger">
+                            <small>Vous utilisez déjà cette référence pour un de vos objets</small>
+                        </div>
+                        <div class="alert-danger" *ngIf="!createSubItemForm.controls.reference.errors?.leftwhitespace
+                                                      && !createSubItemForm.controls.reference.errors?.rightwhitespace
+                                                      && !createSubItemForm.controls.reference.errors?.witespacerepetition
+                                                      && !createSubItemForm.controls.reference.errors?.characterrepetition
+                                                      && createSubItemForm.controls.reference.errors?.failatomicref">
+                            <small>Une erreur de communication s'est produite</small>
+                        </div>
+                        <div *ngIf="createSubItemForm.controls.reference.errors === null
+                                    || createSubItemForm.controls.reference.errors.required"
+                             [ngClass]="{'invisible': createSubItemForm.valid}">
+                            <small>.</small>
+                        </div>
+                    </div>
+                    <div class="form-group pb-2">
+                        <input class="form-control" formControlName="reference" id="reference" type="text"
+                               placeholder="Saisir une référence*" [maxlength]="maxlengthSubItemReference">
+                    </div>
+                    <div class="form-group">
+                        <input class="d-none" #input multiple="multiple" formControlName="files" type="file" id="files" accept="image/*" (change)="handleFileInput($event.target.files)">
+                        <div class="card-deck pt-2 mx-1 justify-content-around" *ngIf="imgPreview !== null && imgPreview.length > 0">
+                            <div class="pt-2 pb-0" *ngFor="let img of imgPreview; let i = index">
+                                <span id="img-helper" class="align-middle d-inline-block h-100"></span>
+                                <figure class="p-0 m-0 d-inline-block align-middle">
+                                    <img #htmlImageElement (load)="onLoadImg(htmlImageElement, img)" class="d-none m-auto" [src]="img">
+                                    <figcaption *ngIf="filesToUpload" style="justify-content: space-between; display: flex" class="text-left justify-content-between align-content-between">
+                                        <small>
+                                            {{filesToUpload[i].name.substring(0, filesToUpload[i].name.length > 16 ? 16 : filesToUpload[i].name.length)}}
+                                            {{filesToUpload[i].name.length > 16 ? '...' : ''}}
+                                        </small>
+                                        <small>
+                                            {{(filesToUpload[i].size/1024 | number: '1.0-0') + ' Ko'}}
+                                        </small>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                    <div  *ngIf="formatUnsuppErrFile"  class="text-left mb-2">
+                        <p class="m-0 ml-1 alert-danger"><small>
+                            Le format <span class="font-weight-bolder text-truncate">{{ formatUnsuppErrFile.type }}</span> de
+                            <span class="font-weight-bolder text-truncate">{{ formatUnsuppErrFile.name }}</span> n'est pas pris en charge.
+                        </small></p>
+                        <p class="m-0 ml-1 alert-danger"><small>
+                            Format supporté: <span class="font-weight-bolder">{{ formatSupportedStr }}</span>
+                        </small></p>
+                    </div>
+                    <div  *ngIf="sizeMaxErrFile"  class="text-left mb-2">
+                        <p class="m-0 ml-1 alert-danger"><small>
+                            Le poids de <span class="font-weight-bolder text-truncate">{{ sizeMaxErrFile.name }}</span> de
+                            <span class="font-weight-bolder">{{ sizeMaxErrFile.size/1024 | number: '1.0-0' }} Ko</span> fait dépasser la limite
+                            autorisée de <span class="font-weight-bolder">{{ filesSizeMax/1024 | number: '1.0-0' }} Ko</span> par exemplaire d'item.
+                        </small></p>
+                        <p class="m-0 ml-1 alert-danger"><small>
+                            Poids restant: <span class="font-weight-bolder">{{ (filesSizeMax - getFilesSize()) / 1024 | number: '1.0-0' }} Ko</span>
+                        </small></p>
+                    </div>
+                </div>
+                <div class="mr-3 small text-right">
+                    <label class="mb-3 mt-3">Cocher pour déverrouiller le bouton
+                        <input class="mr-2 ml-2" type="checkbox" formControlName="checkbox">
+                    </label>
+                </div>
+                <div class="ml-3 m-0 p-0">
+                    <small class="text-success">
+                        Poids des images <i class="fas fa-long-arrow-alt-right"></i> {{getFilesSize()/1024 | number: '1.0-0'}} / {{filesSizeMax/1024}} Ko
+                    </small>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <div>
+                        <button class="btn btn-info" (click)="input.click()">
+                            <i style="font-size: 20px" class="fas fa-file-upload"></i> Ajouter une image
+                        </button>
+                    </div>
+                    <div>
+                        <button [id]="'cancelAddSubItemModal' + object.id + object.getClassNameFirstLetter()"
+                                class="btn btn-danger" type="button" data-dismiss="modal" (click)="onCancelCreateSubItemForm()">Annuler</button>
+                        <button *ngIf="object.getClassNameFirstLetter() === 'S'" [id]="'submitAddSubItemModal' + object.id + object.getClassNameFirstLetter()"
+                                class="ml-2 btn btn-primary" type="submit" data-dismiss="modal" (click)="onSubmitCreateSubItemForm()"
+                                [disabled]="!createSubItemForm.valid">Éditer l'exemplaire</button>
+                        <button *ngIf="object.getClassNameFirstLetter() === 'I'" [id]="'submitAddSubItemModal' + object.id + object.getClassNameFirstLetter()"
+                                class="ml-2 btn btn-primary" type="submit" data-dismiss="modal" (click)="onSubmitCreateSubItemForm()"
+                                [disabled]="!createSubItemForm.valid || !maxSubItemIsValid">Ajouter l'exemplaire</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+<div style="min-width: 180px" class="card shadow m-1 mb-2 mt-2">
+  <!-- Card Header - Dropdown -->
+  <div class="card-header bg-gradient-light py-0 d-flex flex-row align-items-center">
+    <div class="col-lg-11 col-md-11 px-0">
+      <a [href]="'#collapseCategory'+id" class="d-block pt-2 text-decoration-none" data-toggle="collapse" role="button" aria-expanded="true">
+        <h5 class="font-weight-bold font-italic text-gray-800 text-truncate">{{ name }}</h5>
+      </a>
+    </div>
+
+    <!-- Dropdown Category -->
+    <div class="dropdown no-arrow">
+      <!-- Bouton menu animé -->
+      <a class="dropdown-toggle" href="#" role="button" [id]="'dropdownCategory'+id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-800"></i>
+      </a>
+      <!-- Menu annimé -->
+      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" [attr.aria-labelledby]="'dropdownCategory'+id">
+        <div class="dropdown-header">{{ name }}</div>
+        <a class="dropdown-item text-decoration-none" (click)="addItemClick()" href="#">
+          <span class="font-weight-bolder">Ajouter</span> un objet
+        </a>
+        <a class="dropdown-item" (click)="addCategoryClick()" href="#">
+          <span class="font-weight-bolder">Ajouter</span> une catégorie
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" (click)="renameCategoryClick()" href="#">
+          <span class="font-weight-bolder">Renommer</span>
+        </a>
+        <a class="dropdown-item" (click)="moveCategoryClick()" href="#">
+          <span class="font-weight-bolder">Déplacer</span>
+        </a>
+        <a class="dropdown-item" (click)="deleteCategoryClick()" href="#">
+          <span class="font-weight-bolder">Supprimer</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- Category Body -->
+   <div class="collapse" [id]="'collapseCategory'+id">
+    <div class="card-body bg-light py-1 px-1 px-sm-1 px-md-3 px-lg-3 px-xl-3">
+      <div *ngIf="items != null && items.length > 0">
+        <div *ngFor="let item0 of items; let i = index">
+          <div *ngIf="i % 4 === 0 || i === 0" class="card-deck justify-content-center">
+            <app-item *ngFor="let item of items.slice(i, i+4)"
+                      [id]="item.id"
+                      [name]="item.name"
+                      [description]="item.description"
+                      [subItems]="item.subItems">
+            </app-item>
+          </div>
+        </div>
+      </div>
+      <hr class="m-2" *ngIf="items != null && items.length > 0 && categories != null && categories.length > 0" />
+      <div *ngIf="categories != null && categories.length > 0">
+        <div *ngFor="let category0 of categories; let i = index">
+          <div *ngIf="i % 4 === 0 || i === 0" class="card-deck justify-content-center">
+            <app-category *ngFor="let category of categories.slice(i, i+4)"
+                          [id]="category.id"
+                          [name]="category.name"
+                          [categories]="category.categories"
+                          [items]="category.items">
+            </app-category>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- *************************************************************** MODALS **************************************** -->
+<!-- ADD CATEGORY -->
+<app-add-category-modal *ngIf="addCategoryModal" [category]="this" [formWithType]="true"></app-add-category-modal>
+
+<!-- RENAME CATEGORY -->
+<app-rename-modal *ngIf="renameCategoryModal" [whoRename]="this"></app-rename-modal>
+
+<!-- DELETE CATEGORY -->
+<app-del-modal *ngIf="deleteCategoryModal" [whoDelete]="this"></app-del-modal>
+
+<!-- ADD ITEM -->
+<app-add-item-modal *ngIf="addItemModal" [id]="this.id" [nameTitle]="this.name"></app-add-item-modal>
+
+<!-- MOVE CATEGORY -->
+<app-move-modal *ngIf="moveCategoryModal" [whoMove]="this"></app-move-modal>
+

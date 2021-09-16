@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-lg-6 d-none d-lg-block bg-password-image"></div>
+    <div class="col-lg-6">
+        <div class="p-5">
+            <div class="text-center">
+                <h1 class="h2 text-gray-800 mb-4">Mot de passe oublié ?</h1>
+                <p class="mb-4 text-left small text-center">
+                    <span class="d-block text-left" *ngIf="!forgotPassSuccesMsg && !forgotPassErrorMsg">
+                        Saisissez votre adresse email pour que nous puissions vous envoyer un nouveau mot de passe.
+                    </span>
+                    <span class="d-block text-danger font-weight-bolder" *ngIf="forgotPassErrorMsg">L'adresse email n'est associé à aucun compte</span>
+                    <span class="d-block text-success font-weight-bolder" *ngIf="forgotPassSuccesMsg">Mot de passe envoyé avec succès !</span>
+                    <span class="d-block" *ngIf="forgotPassSuccesMsg">Redirection vers la page de connexion dans {{ num }} secondes.</span>
+                </p>
+            </div>
+            <form class="user" [formGroup]="forgotPassForm">
+                <div class="mb-3 form-group">
+                    <input formControlName="email" type="email" class="form-control form-control-user"
+                           id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Adresse mail">
+                </div>
+                <div class="mb-4">
+                    <input class="mr-2 ml-2" type="checkbox" formControlName="checkbox">
+                    <small>Cocher pour déverrouiller le bouton</small>
+                </div>
+                <button type="submit" class="btn btn-primary text-white btn-user btn-block"
+                        (click)="onSubmitForgotPassForm()" [disabled]="disabled()">
+                    Envoyer un nouveau mot de passe
+                </button>
+            </form>
+            <hr class="mt-4">
+            <div class="text-center">
+                <a class="small" routerLink="/inscription">Pas de compte ? S'inscrire</a>
+            </div>
+            <div class="text-center">
+                <a class="small" routerLink="/connexion">Déjà inscrit ? Se connecter</a>
+            </div>
+        </div>
+    </div>
+</div>

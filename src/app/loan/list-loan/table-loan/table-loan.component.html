@@ -1,0 +1,129 @@
+<div id="mainDiv" class="ml-0 mr-0 card shadow mb-4">
+    <div class="card-header py-3">
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable">
+                <thead class="thead-light">
+                <tr [id]="'trHead'" class="small">
+                    <th class="text-center">
+                        <span class="align-items-center d-inline-flex">
+                            Début<i class="mb-1 ml-3 fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th *ngIf="etat === 'terminés'"  class="text-center">
+                        <span class="align-items-center d-inline-flex">
+                            Fin<i class="mb-1 ml-3 fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th class="text-center">
+                        <span class="align-items-center d-inline-flex">
+                            Référence<i class="mb-1 ml-3 fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th class="text-center">
+                        <span class="align-items-center d-inline-flex">
+                            Bénéficiaire<i class="mb-1 ml-3 fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th class="text-center">
+                        <span class="align-items-center d-inline-flex">
+                            Information<i class="mb-1 ml-3 fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th *ngIf="etat === 'en cours'" class="text-center">
+                        <span class="align-items-center d-inline-flex">
+                            Rappel<i class="mb-1 ml-3 fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th *ngIf="etat === 'terminés'" class="text-center">
+                        <span class="align-items-center d-inline-flex">
+                            Commentaire<i class="mb-1 ml-3 fas fa-sort"></i>
+                        </span>
+                    </th>
+                    <th class="text-center">
+                        <div class="dropdown no-arrow">
+                            <!-- Bouton menu animé -->
+                            <a class="dropdown-toggle" href="#" role="button" [id]="'dropdownLoanAll'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-800"></i>
+                            </a>
+                            <!-- Menu annimé -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" [attr.aria-labelledby]="'dropdownLoanAll'">
+                                <div class="dropdown-header">Actions possibles</div>
+                                <a *ngIf="etat === 'en cours'" class="dropdown-item" href="#" data-toggle="modal" [attr.data-target]="'#closeLoanModalAll'">
+                                    <span class="font-weight-bolder">Clôturer</span> tous les prêts
+                                </a>
+                                <div *ngIf="etat === 'en cours'" class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" [attr.data-target]="'#deleteLoanModalAll'">
+                                    <span class="font-weight-bolder">Supprimer</span> tous les prêts
+                                </a>
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody [id]="'tbody'">
+                    <tr *ngFor="let loan of loans; let i = index">
+                        <td [ngClass]="{'bg-light': i%2 === 1, 'align-middle text-center': true}"  [attr.data-sort]="loan.startDate">
+                            <small>{{ loan.startDate | date: 'dd/MM/yyyy' }}</small>
+                        </td>
+                        <td *ngIf="etat === 'terminés'" [ngClass]="{'bg-light': i%2 === 1, 'align-middle text-center': true}"  [attr.data-sort]="loan.endDate">
+                            <small>{{ loan.endDate | date: 'dd/MM/yyyy' }}</small>
+                        </td>
+                        <td [ngClass]="{'bg-light': i%2 === 1, 'align-middle text-center': true}">
+                            <small>{{ loan.reference }}</small>
+                        </td>
+                        <td [ngClass]="{'bg-light': i%2 === 1, 'align-middle text-center': true}">
+                            <small>{{ loan.beneficiary }}</small>
+                        </td>
+                        <td [ngClass]="{'bg-light': i%2 === 1, 'align-middle text-center': true}">
+                            <small>{{ loan.information }}</small>
+                        </td>
+                        <td *ngIf="etat === 'en cours'" [ngClass]="{'bg-light': i%2 === 1, 'align-middle text-center': true}"  [attr.data-sort]="loan.reminder">
+                            <small>{{ loan.reminder | date: 'dd/MM/yyyy' }}</small>
+                        </td>
+                        <td *ngIf="etat === 'terminés'" [ngClass]="{'bg-light': i%2 === 1, 'align-middle text-center': true}">
+                            <small>{{ loan.comment }}</small>
+                        </td>
+                        <td [ngClass]="{'bg-light': i%2 === 1, 'align-middle text-center': true}">
+                            <div class="dropdown no-arrow">
+                                <!-- Bouton menu animé -->
+                                <a class="dropdown-toggle" href="#" role="button" [id]="'dropdownLoan'+loan.id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="small fas fa-ellipsis-v fa-sm fa-fw text-gray-800"></i>
+                                </a>
+                                <!-- Menu annimé -->
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" [attr.aria-labelledby]="'dropdownLoan'+loan.id">
+                                    <div class="dropdown-header">Actions possibles</div>
+                                    <a *ngIf="etat === 'en cours'" class="dropdown-item" href="#" data-toggle="modal" [attr.data-target]="'#closeLoanModal'+loan.id">
+                                        <span class="font-weight-bolder">Clôturer</span> le prêt
+                                    </a>
+                                    <div *ngIf="etat === 'en cours'" class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" [attr.data-target]="'#deleteLoanModal'+loan.id">
+                                        <span class="font-weight-bolder">Supprimer</span> le prêt
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ************************************************** MODALS ***************************************************** -->
+<!-- CLOSE LOAN -->
+<div *ngIf="etat === 'en cours'">
+    <app-close-loan-modal [loans]="loans" [singleLoan]="false" [goal]="'close'" [etat]="etat"></app-close-loan-modal>
+</div>
+
+<!-- CLOSE LOANS -->
+<div *ngIf="etat === 'en cours'">
+    <app-close-loan-modal *ngFor="let loan of loans" [loans]="[loan]" [singleLoan]="true" [goal]="'close'" [etat]="etat"></app-close-loan-modal>
+</div>
+
+<!-- DELETE LOAN -->
+<app-close-loan-modal [loans]="loans" [singleLoan]="false" [goal]="'delete'" [etat]="etat"></app-close-loan-modal>
+
+<!-- DELETE LOANS -->
+<app-close-loan-modal *ngFor="let loan of loans" [loans]="[loan]" [singleLoan]="true" [goal]="'delete'" [etat]="etat"></app-close-loan-modal>

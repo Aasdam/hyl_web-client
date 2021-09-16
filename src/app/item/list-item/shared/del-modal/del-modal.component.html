@@ -1,0 +1,43 @@
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" [id]="'deleteModal'+whoDelete.id+whoDelete.getClassNameFirstLetter()"
+     data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel3">
+                    Supprimer <span class="font-weight-bolder">{{ whoDelete.name ?  whoDelete.name : whoDelete.reference}}</span> ?
+                </h5>
+                <button [id]="'crossDelModal'+whoDelete.id+whoDelete.getClassNameFirstLetter()" class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-window-close text-danger" ></i></span>
+                </button>
+            </div>
+            <form [formGroup]="deleteForm">
+                <div class="modal-body">
+                    <p *ngIf="whoDelete.getClassNameFirstLetter() === 'I'" class="text-danger font-weight-bolder">
+                        Tous les exemplaires de {{ whoDelete.name }} ainsi que les prets qui y sont associés seront également supprimés.
+                    </p>
+                    <p *ngIf="whoDelete.getClassNameFirstLetter() === 'C'" class="font-weight-bolder">
+                        Les objets et sous-catégories de '{{ whoDelete.name }}' seront transférés
+                        dans sa catégorie parente '{{ itemService.getParentCategoryOf(whoDelete.id).name }}'.
+                    </p>
+                    <p *ngIf="whoDelete.getClassNameFirstLetter() === 'S'" class="text-danger font-weight-bolder">
+                        Les prets associés à {{ whoDelete.reference }} seront également supprimés.
+                    </p>
+                    <div class="mt-3 text-right">
+                        Cocher pour déverrouiller le bouton de suppression
+                        <input class="mr-2 ml-2" type="checkbox" formControlName="checkbox">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [id]="'cancelDelModal'+whoDelete.id+whoDelete.getClassNameFirstLetter()"
+                            class="btn btn-danger" type="button" data-dismiss="modal">Annuler</button>
+                    <button [id]="'submitDelModal'+whoDelete.id+whoDelete.getClassNameFirstLetter()"
+                            class="btn btn-primary" type="submit" data-dismiss="modal"
+                            (click)="onSubmitDeleteForm()" [disabled]="!deleteForm.valid">
+                        Supprimer {{ whoDelete.name ?  whoDelete.name : whoDelete.reference}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+<div style="min-width: 120px" class="card shadow m-1 mt-2">
+  <!-- Card Header - Dropdown -->
+  <div class="card-header bg-gradient-light py-0 d-flex flex-row align-items-center">
+    <div class="col-lg-11 col-md-11 px-0">
+      <a [href]="'#collapseItem'+id" class="text-decoration-none d-block py-2 text-truncate" data-toggle="collapse" role="button" aria-expanded="true">
+        <small class="font-weight-bold font-italic text-primary">{{ name }}</small>
+      </a>
+    </div>
+
+    <!-- Dropdown Item -->
+    <div class="dropdown no-arrow">
+      <!-- Bouton menu animé -->
+      <a class="dropdown-toggle" href="#" role="button" [id]="'dropdownItem'+id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-ellipsis-v fa-sm fa-fw text-primary"></i>
+      </a>
+      <!-- Menu annimé -->
+      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" [attr.aria-labelledby]="'dropdownItem'+id">
+        <div class="dropdown-header">{{ name }}</div>
+        <a class="dropdown-item" data-toggle="modal" (click)="addSubItemClick()" href="#">
+          <span class="font-weight-bolder">Ajouter</span> un exemplaire
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" data-toggle="modal" (click)="renameItemClick()" href="#">
+          <span class="font-weight-bolder">Renommer</span>
+        </a>
+        <a class="dropdown-item" data-toggle="modal" (click)="moveItemClick()" href="#">
+          <span class="font-weight-bolder">Déplacer</span>
+        </a>
+        <a class="dropdown-item" data-toggle="modal" (click)="deleteItemClick()" href="#">
+          <span class="font-weight-bolder">Supprimer</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- Item Body -->
+  <div class="collapse" [id]="'collapseItem'+id">
+    <div class="card-body bg-light py-1 px-0 px-sm-0 px-md-1 px-lg-1 px-xl-1">
+      <!-- SUBITEM -->
+      <div class="justify-content-center">
+      <app-sub-item *ngFor="let subItem of subItems"
+                    [id]="subItem.id"
+                    [reference]="subItem.reference"
+                    [urlImages]="subItem.urlImages"
+                    [description]="this.description"
+                    [trackingSheets]="subItem.trackingSheets">
+      </app-sub-item>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ******************************************************** MODALS *********************************************** -->
+<!-- RENAME ITEM -->
+<app-rename-modal *ngIf="renameItemModal" [whoRename]="this"></app-rename-modal>
+
+<!-- MOVE ITEM -->
+<app-move-modal *ngIf="moveItemModal" [whoMove]="this"></app-move-modal>
+
+<!-- DELETE ITEM -->
+<app-del-modal *ngIf="deleteItemModal" [whoDelete]="this"></app-del-modal>
+
+<!-- ADD SUBITEM -->
+<app-add-subitem-modal *ngIf="addSubItemModal"  [object]="this"></app-add-subitem-modal>
